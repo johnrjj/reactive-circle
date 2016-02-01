@@ -46,7 +46,6 @@ function main(sources) {
   return sinks;
 }
 
-//imperative
 function DOMDriver(objStream) {
   function createElement(obj) {
     const element = document.createElement(obj.tagName);
@@ -77,7 +76,6 @@ function DOMDriver(objStream) {
   return DOMSource;
 }
 
-//imperative
 function consoleLogDriver(text) {
   text.subscribe(text => console.log(text));
 }
@@ -89,15 +87,32 @@ const drivers = {
 
 Cycle.run(main, drivers);
 
-// function run(mainFn, drivers) {
-//   const proxySources = {};
-//   //create a source for each driver
-//   Object.keys(drivers).forEach(key => {
-//     proxySources[key] = new Rx.Subject();
-//   });
-//   const sinks = mainFn(proxySources);
+
+// run implementation without cyclejs library below...
+
+// function makeSinkProxies(drivers) {
+//   let sinkProxies = {}
+//   for (let name in drivers) {
+//     sinkProxies[name] = new Rx.ReplaySubject(1)
+//   }
+//   return sinkProxies
+// }
+//
+// function callDrivers(drivers, sinkProxies) {
+//   let sources = {}
+//   for (let name in drivers) {
+//     sources[name] = drivers[name](sinkProxies[name])
+//   }
+//   return sources
+// }
+//
+// function run(main, drivers) {
+//   let sinkProxies = makeSinkProxies(drivers)
+//   let sources = callDrivers(drivers, sinkProxies)
+//   let sinks = main(sources)
 //   Object.keys(drivers).forEach(key => {
 //     const source = drivers[key](sinks[key]);
-//     source.subscribe(x => proxySources[key].onNext(x)); //feed event
 //   });
 // }
+
+// run(main, drivers);
