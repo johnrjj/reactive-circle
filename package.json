@@ -29,6 +29,7 @@
     "webpack-dev-server": "^1.12.1"
   },
   "dependencies": {
+    "@cycle/core": "^6.0.0",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
     "rx": "^4.0.7"

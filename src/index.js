@@ -1,10 +1,11 @@
 import Rx from 'rx';
+import Cycle from '@cycle/core';
 
 //functional
 function main(sources) {
-  const click = sources.DOM;
+  const mouseoverStream = sources.DOM.selectEvents('span', 'mouseover');
   const sinks = {
-    DOM:  click
+    DOM:  mouseoverStream
         .startWith(null)
         .flatMapLatest(() =>
           Rx.Observable.timer(0, 1000)
@@ -42,7 +43,6 @@ function DOMDriver(objStream) {
     obj.children
       .filter(c => typeof c === 'string')
       .forEach(c => element.innerHTML += c);
-    // element.innerHTML = obj.children[0];
     return element;
   }
 
@@ -53,7 +53,13 @@ function DOMDriver(objStream) {
     container.appendChild(element);
   });
   // input from DOM (clicks from user)
-  const DOMSource = Rx.Observable.fromEvent(document, 'click');
+  const DOMSource = {
+    selectEvents: function(tagName, eventType) {
+      // returns obsv of events that happen only on elements that match below
+      return Rx.Observable.fromEvent(document, eventType)
+        .filter(ev => ev.target.tagName === tagName.toUpperCase());
+    }
+  }
   return DOMSource;
 }
 
@@ -63,22 +69,24 @@ function consoleLogDriver(text) {
 }
 
 
-function run(mainFn, drivers) {
-  const proxySources = {};
-  //create a source for each driver
-  Object.keys(drivers).forEach(key => {
-    proxySources[key] = new Rx.Subject();
-  });
-  const sinks = mainFn(proxySources);
-  Object.keys(drivers).forEach(key => {
-    const source = drivers[key](sinks[key]);
-    source.subscribe(x => proxySources[key].onNext(x)); //feed event
-  });
-}
+// function run(mainFn, drivers) {
+//   const proxySources = {};
+//   //create a source for each driver
+//   Object.keys(drivers).forEach(key => {
+//     proxySources[key] = new Rx.Subject();
+//   });
+//   const sinks = mainFn(proxySources);
+//   Object.keys(drivers).forEach(key => {
+//     const source = drivers[key](sinks[key]);
+//     source.subscribe(x => proxySources[key].onNext(x)); //feed event
+//   });
+// }
+
+
 
 const drivers = {
   DOM: DOMDriver,
   Log: consoleLogDriver,
 }
 
-run(main, drivers);
+Cycle.run(main, drivers);
