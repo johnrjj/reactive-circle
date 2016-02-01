@@ -1,21 +1,21 @@
 {
-  "name": "reactive-circle",
+  "name": "reactive-cycle",
   "version": "1.0.0",
-  "description": "circlejs demo thingy via rxjs",
+  "description": "cyclejs thingy via rxjs",
   "scripts": {
     "start": "node server.js",
     "lint": "eslint src"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gaearon/react-hot-boilerplate.git"
+    "url": "https://github.com/johnrjj/reactive-cycle.git"
   },
   "keywords": [
     "eggheadio"
   ],
   "author": "JJ",
   "license": "MIT",
-  "homepage": "https://github.com/johnrjj/reactive-circle",
+  "homepage": "https://github.com/johnrjj/reactive-cycle",
   "devDependencies": {
     "babel-core": "^6.0.20",
     "babel-eslint": "^4.1.3",

@@ -23,8 +23,10 @@ function ConsoleLogEffect(text) {
   text.subscribe(text => console.log(text));
 }
 
+function run(mainFn) {
+  const sinks = mainFn();
+  ConsoleLogEffect(sinks.Log);
+  DOMEffect(sinks.DOM);
+}
 
-//run
-const sinks = main();
-ConsoleLogEffect(sinks.Log);
-DOMEffect(sinks.DOM);
+run(main);
