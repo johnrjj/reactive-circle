@@ -11,7 +11,7 @@ function main() {
 }
 
 //imperative
-function DOMEffect(text) {
+function DOMDriver(text) {
   text.subscribe(text => {
     const container = document.querySelector('#root');
     container.textContent = text;
@@ -19,14 +19,20 @@ function DOMEffect(text) {
 }
 
 //imperative
-function ConsoleLogEffect(text) {
+function consoleLogDriver(text) {
   text.subscribe(text => console.log(text));
 }
 
-function run(mainFn) {
+function run(mainFn, drivers) {
   const sinks = mainFn();
-  ConsoleLogEffect(sinks.Log);
-  DOMEffect(sinks.DOM);
+  Object.keys(drivers).forEach(key => {
+    drivers[key](sinks[key]);
+  });
 }
 
-run(main);
+const drivers = {
+  DOM: DOMDriver,
+  Log: consoleLogDriver,
+}
+
+run(main, drivers);
