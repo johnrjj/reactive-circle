@@ -1,7 +1,30 @@
-import Rx from 'rx';
+// import Rx from 'rx';
 import Cycle from '@cycle/core';
 
-//functional
+// source: input (read) effects
+// sink: output (write) effects
+
+function html(tagName, children) {
+  return {
+    tagName: tagName,
+    children: children,
+  };
+}
+
+function h1(children) {
+  return {
+    tagName: 'H1',
+    children: children,
+  };
+}
+
+function span(children) {
+  return {
+    tagName: 'SPAN',
+    children: children,
+  };
+}
+
 function main(sources) {
   const mouseoverStream = sources.DOM.selectEvents('span', 'mouseover');
   const sinks = {
@@ -9,28 +32,19 @@ function main(sources) {
         .startWith(null)
         .flatMapLatest(() =>
           Rx.Observable.timer(0, 1000)
-            .map(i => {
-              return {
-                tagName: 'H1',
-                children: [
-                  {
-                    tagName: 'span',
-                    children: [
-                      `Seconds elapsed: ${i}`
-                    ]
-                  }
-                ]
-              };
-            })
+            .map(i =>
+              h1([
+                span([
+                  `Seconds elapsed: ${i}`
+                ])
+              ])
+            )
         ),
     Log: Rx.Observable.timer(0,2000)
         .map(i => 2*i),
   };
   return sinks;
 }
-
-// source: input (read) effects
-// sink: output (write) effects
 
 //imperative
 function DOMDriver(objStream) {
@@ -68,6 +82,12 @@ function consoleLogDriver(text) {
   text.subscribe(text => console.log(text));
 }
 
+const drivers = {
+  DOM: DOMDriver,
+  Log: consoleLogDriver,
+}
+
+Cycle.run(main, drivers);
 
 // function run(mainFn, drivers) {
 //   const proxySources = {};
@@ -81,12 +101,3 @@ function consoleLogDriver(text) {
 //     source.subscribe(x => proxySources[key].onNext(x)); //feed event
 //   });
 // }
-
-
-
-const drivers = {
-  DOM: DOMDriver,
-  Log: consoleLogDriver,
-}
-
-Cycle.run(main, drivers);
