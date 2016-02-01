@@ -1,9 +1,9 @@
 import Rx from 'rx';
 
 //functional
-function main(DOMSource) {
-  const click = DOMSource;
-  return {
+function main(sources) {
+  const click = sources.DOM;
+  const sinks = {
     DOM:  click
         .startWith(null)
         .flatMapLatest(() =>
@@ -13,6 +13,7 @@ function main(DOMSource) {
     Log: Rx.Observable.timer(0,2000)
         .map(i => 2*i),
   };
+  return sinks;
 }
 
 // source: input (read) effects
@@ -37,13 +38,16 @@ function consoleLogDriver(text) {
 
 
 function run(mainFn, drivers) {
-  const proxyDOMSource = new Rx.Subject(); //rx observable that has nothing happening that we can modify later
-  const sinks = mainFn(proxyDOMSource);
-  const DOMSource = drivers.DOM(sinks.DOM);
-  DOMSource.subscribe(click => proxyDOMSource.onNext(click)); //onnext pushes event to proxy observable
-  // Object.keys(drivers).forEach(key => {
-  //   drivers[key](sinks[key]);
-  // });
+  const proxySources = {};
+  //create a source for each driver
+  Object.keys(drivers).forEach(key => {
+    proxySources[key] = new Rx.Subject();
+  });
+  const sinks = mainFn(proxySources);
+  Object.keys(drivers).forEach(key => {
+    const source = drivers[key](sinks[key]);
+    source.subscribe(x => proxySources[key].onNext(x)); //feed event
+  });
 }
 
 const drivers = {
