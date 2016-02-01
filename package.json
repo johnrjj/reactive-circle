@@ -1,7 +1,7 @@
 {
-  "name": "react-hot-boilerplate",
+  "name": "reactive-circle",
   "version": "1.0.0",
-  "description": "Boilerplate for ReactJS project with hot code reloading",
+  "description": "circlejs demo thingy via rxjs",
   "scripts": {
     "start": "node server.js",
     "lint": "eslint src"
@@ -11,22 +11,11 @@
     "url": "https://github.com/gaearon/react-hot-boilerplate.git"
   },
   "keywords": [
-    "react",
-    "reactjs",
-    "boilerplate",
-    "hot",
-    "reload",
-    "hmr",
-    "live",
-    "edit",
-    "webpack"
+    "eggheadio"
   ],
-  "author": "Dan Abramov <dan.abramov@me.com> (http://github.com/gaearon)",
+  "author": "JJ",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/gaearon/react-hot-boilerplate/issues"
-  },
-  "homepage": "https://github.com/gaearon/react-hot-boilerplate",
+  "homepage": "https://github.com/johnrjj/reactive-circle",
   "devDependencies": {
     "babel-core": "^6.0.20",
     "babel-eslint": "^4.1.3",
