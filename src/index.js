@@ -1,5 +1,8 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import Rx from 'rx';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+Rx.Observable.timer(0, 1000)
+  .map(i => `Seconds elapsed ${i}`)
+  .subscribe(text => {
+    const container = document.querySelector('#root');
+    container.textContent = text;
+  });
