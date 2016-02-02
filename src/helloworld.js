@@ -7,7 +7,7 @@ function main(sources) {
   const inputEv$ = sources.DOM.select('.fieldclass').events('input');
   // Get each event, get target (actual dom element), get string inside element
   const name$ = inputEv$.map(ev => ev.target.value).startWith(''); //needs a start with so name$ not empty
-  // every time the user makes a write effect, we create a new dom elem
+  // every time the user makes change, create a new dom elem
   const sinks = {
     DOM: name$.map(name =>
       div([
