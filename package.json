@@ -30,6 +30,8 @@
   },
   "dependencies": {
     "@cycle/core": "^6.0.0",
+    "@cycle/dom": "^9.0.2",
+    "chai": "^3.5.0",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
     "rx": "^4.0.7"

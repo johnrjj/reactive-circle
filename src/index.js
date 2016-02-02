@@ -1,39 +1,19 @@
 // import Rx from 'rx';
 import Cycle from '@cycle/core';
+import {h, h1, span, makeDOMDriver} from '@cycle/dom';
 
 // source: input (read) effects
 // sink: output (write) effects
 
-function html(tagName, children) {
-  return {
-    tagName: tagName,
-    children: children,
-  };
-}
-
-function h1(children) {
-  return {
-    tagName: 'H1',
-    children: children,
-  };
-}
-
-function span(children) {
-  return {
-    tagName: 'SPAN',
-    children: children,
-  };
-}
-
 function main(sources) {
-  const mouseoverStream = sources.DOM.selectEvents('span', 'mouseover');
+  const mouseoverStream = sources.DOM.select('span').events('mouseover');
   const sinks = {
     DOM:  mouseoverStream
         .startWith(null)
         .flatMapLatest(() =>
           Rx.Observable.timer(0, 1000)
             .map(i =>
-              h1([
+              h1({style: {background: 'red'}}, [ /* virtual dom elements */
                 span([
                   `Seconds elapsed: ${i}`
                 ])
@@ -46,49 +26,79 @@ function main(sources) {
   return sinks;
 }
 
-function DOMDriver(objStream) {
-  function createElement(obj) {
-    const element = document.createElement(obj.tagName);
-    obj.children
-      .filter(c => typeof c === 'object')
-      .map(createElement)
-      .forEach(c => element.appendChild(c));
-    obj.children
-      .filter(c => typeof c === 'string')
-      .forEach(c => element.innerHTML += c);
-    return element;
-  }
-
-  objStream.subscribe(obj => {
-    const container = document.querySelector('#root');
-    container.innerHTML = '';
-    const element = createElement(obj);
-    container.appendChild(element);
-  });
-  // input from DOM (clicks from user)
-  const DOMSource = {
-    selectEvents: function(tagName, eventType) {
-      // returns obsv of events that happen only on elements that match below
-      return Rx.Observable.fromEvent(document, eventType)
-        .filter(ev => ev.target.tagName === tagName.toUpperCase());
-    }
-  }
-  return DOMSource;
-}
-
 function consoleLogDriver(text) {
   text.subscribe(text => console.log(text));
 }
 
 const drivers = {
-  DOM: DOMDriver,
+  DOM: makeDOMDriver('#root'),
   Log: consoleLogDriver,
 }
 
 Cycle.run(main, drivers);
 
 
-// run implementation without cyclejs library below...
+//old custom code to learn how cyclejs works...dont want to delete it, for reference.
+
+
+// custom makeDomDriver, toyDOMDriver, before subbing in actual cyclejs DOM Driver
+// function makeDOMDriver(mountSelector) {
+//   return function DOMDriver(objStream) {
+//     function createElement(obj) {
+//       const element = document.createElement(obj.tagName);
+//       obj.children
+//         .filter(c => typeof c === 'object')
+//         .map(createElement)
+//         .forEach(c => element.appendChild(c));
+//       obj.children
+//         .filter(c => typeof c === 'string')
+//         .forEach(c => element.innerHTML += c);
+//       return element;
+//     }
+//
+//     objStream.subscribe(obj => {
+//       const container = document.querySelector(mountSelector);
+//       container.innerHTML = '';
+//       const element = createElement(obj);
+//       container.appendChild(element);
+//     });
+//     // input from DOM (clicks from user)
+//     const DOMSource = {
+//       selectEvents: function(tagName, eventType) {
+//         // returns obsv of events that happen only on elements that match below
+//         return Rx.Observable.fromEvent(document, eventType)
+//           .filter(ev => ev.target.tagName === tagName.toUpperCase());
+//       }
+//     }
+//     return DOMSource;
+//   }
+// }
+
+// old custom html functions
+// function html(tagName, children) {
+//   return {
+//     tagName: tagName,
+//     children: children,
+//   };
+// }
+//
+// function h1(children) {
+//   return {
+//     tagName: 'H1',
+//     children: children,
+//   };
+// }
+//
+// function span(children) {
+//   return {
+//     tagName: 'SPAN',
+//     children: children,
+//   };
+// }
+
+
+
+// custom run implementation without cyclejs library below...
 
 // function makeSinkProxies(drivers) {
 //   let sinkProxies = {}
