@@ -1,12 +1,7 @@
 import Cycle from '@cycle/core';
 import {button, h1, h4, a, div, makeDOMDriver} from '@cycle/dom';
 import {makeHTTPDriver} from '@cycle/http';
-// DOM Read effect: Button click
-// HTTP Write: Request sent
-// HTTP Read: Response received
-// DOM Write effect: Data display
-//Remember: write effects - sinks
-//          read effects - comes from sources
+
 function main(sources) {
   const clickEvent$ = sources.DOM
     .select('.get-first').events('click');
@@ -52,3 +47,12 @@ const drivers = {
 }
 
 Cycle.run(main, drivers);
+
+
+// Notes: 
+// DOM Read effect: Button click
+// HTTP Write: Request sent
+// HTTP Read: Response received
+// DOM Write effect: Data display
+//Remember: write effects - sinks
+//          read effects - comes from sources
