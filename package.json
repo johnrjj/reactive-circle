@@ -34,6 +34,7 @@
     "@cycle/core": "^6.0.0",
     "@cycle/dom": "^9.0.2",
     "@cycle/http": "^8.0.0",
+    "@cycle/isolate": "^1.2.0",
     "chai": "^3.5.0",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
